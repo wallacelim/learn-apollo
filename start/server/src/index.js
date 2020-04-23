@@ -1,6 +1,6 @@
 const { ApolloServer } = require("apollo-server");
 const typeDefs = require("./schema");
-const createStore = require("./utils");
+const { createStore } = require("./utils");
 
 const LaunchAPI = require("./datasources/launch");
 const UserAPI = require("./datasources/user");
