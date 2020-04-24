@@ -6,8 +6,6 @@ import { LoginForm, Loading } from "../components";
 import ApolloClient from "apollo-client";
 import * as LoginTypes from "./__generated__/login";
 
-const client: ApolloClient<any> = useApolloClient();
-
 export const LOGIN_USER = gql`
     mutation login($email: String!) {
         login(email: $email)
@@ -15,6 +13,7 @@ export const LOGIN_USER = gql`
 `;
 
 export default function Login() {
+    const client: ApolloClient<any> = useApolloClient();
     const [login, { loading, error }] = useMutation<
         LoginTypes.login,
         LoginTypes.loginVariables

@@ -3,13 +3,14 @@ import { ApolloCache } from "apollo-cache";
 import * as GetCartItemTypes from "./pages/__generated__/GetCartItems";
 import * as LaunchTileTypes from "./pages/__generated__/LaunchTile";
 import { Resolvers } from "apollo-client";
+import { GET_CART_ITEMS } from "./pages/cart";
 
 export const typeDefs = gql`
     extend type Query {
         isLoggedIn: Boolean!
-        cartItems; [ID!]!
+        cartItems: [ID!]!
     }
-    
+
     extend type Launch {
         isInCart: Boolean!
     }
@@ -30,7 +31,23 @@ interface ResolverMap {
 }
 
 interface AppResolvers extends Resolvers {
-    // We will update this with our app's resolvers later
+    Launch: ResolverMap;
 }
 
-export const resolvers = {};
+export const resolvers: AppResolvers = {
+    Launch: {
+        isInCart: (
+            launch: LaunchTileTypes.LaunchTile,
+            _,
+            { cache }
+        ): boolean => {
+            const queryResult = cache.readQuery<GetCartItemTypes.GetCartItems>({
+                query: GET_CART_ITEMS,
+            });
+            if (queryResult) {
+                return queryResult.cartItems.includes(launch.id);
+            }
+            return false;
+        },
+    },
+};
